@@ -34,7 +34,6 @@ public class User implements UserDetails {
         return role.getAuthorities();
     }
 
-
     @Override
     public String getUsername() {
         return null;
