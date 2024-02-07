@@ -1,0 +1,10 @@
+
+FROM adoptopenjdk:17-jre-hotspot-alpine
+
+WORKDIR /app
+
+COPY target/ProductOrderService.jar /app
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "ProductOrderService.jar"]

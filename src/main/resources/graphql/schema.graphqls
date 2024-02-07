@@ -1,0 +1,91 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
+    role: [String!]!
+}
+
+input UserInput {
+    name: String!
+    email: String!
+    password: String!
+    role: [String!]!
+}
+
+input UserUpdateInput {
+    id: ID!
+    name: String!
+    email: String!
+    password: String!
+    role: [String!]!
+}
+
+type Product {
+    id: ID!
+    name: String!
+    stock: Int!
+    price: Float!
+}
+
+input ProductInput {
+    name: String!
+    stock: Int!
+    price: Float!
+}
+
+input ProductUpdateInput {
+    name: String!
+    stock: Int!
+    price: Float!
+}
+
+type ProductLine {
+    id: ID!
+    product: Product!
+    quantity: Int!
+    order: Order!
+}
+
+input ProductLineInput {
+    productId: ID!
+    quantity: Int!
+}
+
+type Order {
+    id: ID!
+    products: [ProductLine!]!
+    user: User!
+}
+
+input OrderInput {
+    userId: ID!
+    productLinesDto: [ProductLineInput!]!
+}
+
+type Query {
+    getAllUsers: [User!]!
+    getUserById(id: ID!): User
+    getAllProducts: [Product!]!
+    getProductById(id: ID!): Product
+    getLowStockProducts(threshold: Int!): [Product!]!
+    getProductsByOrder(orderDto: OrderInput!): [Product!]!
+    getAllOrders: [Order!]!
+    getOrderById(id: ID!): Order
+    getAllOrdersByUser(userId: ID!): [Order!]!
+}
+
+type Mutation {
+    createUser(userDto: UserInput!): User
+    updateUser(userDto: UserUpdateInput!): User
+    deleteUser(id: ID!): Boolean
+    createProduct(productDto: ProductInput!): Product
+    updateProduct(productDto: ProductUpdateInput!): Product
+    deleteProduct(id: ID!): Boolean
+    createOrder(orderDto: OrderInput!): Order
+    updateOrder(orderDto: OrderInput!): Order
+    deleteOrder(id: ID!): Boolean
+}
+
+
+
