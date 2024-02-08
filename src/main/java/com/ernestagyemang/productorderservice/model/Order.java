@@ -21,7 +21,7 @@ public class Order {
     private Long id;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<ProductLine> productLines;
+    private List<ProductLine> productLineList;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

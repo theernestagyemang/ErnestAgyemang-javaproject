@@ -1,6 +1,6 @@
 package com.ernestagyemang.productorderservice.api;
 
-import com.ernestagyemang.productorderservice.dto.OrderDto;
+import com.ernestagyemang.productorderservice.dto.OrderInput;
 import com.ernestagyemang.productorderservice.model.Order;
 import com.ernestagyemang.productorderservice.service.implementations.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -27,23 +28,23 @@ public class OrderController {
     }
 
     @QueryMapping
-    public List<Order> getAllOrdersByUser(@Argument Long userId) {
-        return orderService.getAllOrdersByUser(userId);
+    public List<Order> getAllOrdersByUser(Principal principal) {
+        return orderService.getAllOrdersByUser(principal.getName());
     }
 
     @MutationMapping
-    public Order createOrder(@Argument OrderDto orderDto) {
-        return orderService.createOrder(orderDto);
+    public Order createOrder(@Argument OrderInput orderInput) {
+        return orderService.createOrder(orderInput);
     }
 
     @MutationMapping
-    public Order updateOrder(@Argument OrderDto orderDto) {
-        return orderService.updateOrder(orderDto);
+    public Order updateOrder(@Argument OrderInput orderInput) {
+        return orderService.updateOrder(orderInput);
     }
 
     @MutationMapping
-    public void deleteOrder(@Argument Long id) {
-        orderService.deleteOrder(id);
+    public String deleteOrder(@Argument Long id) {
+        return orderService.deleteOrder(id);
     }
 
 }

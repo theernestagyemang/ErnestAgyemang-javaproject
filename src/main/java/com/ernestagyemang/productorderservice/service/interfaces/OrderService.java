@@ -1,6 +1,6 @@
 package com.ernestagyemang.productorderservice.service.interfaces;
 
-import com.ernestagyemang.productorderservice.dto.OrderDto;
+import com.ernestagyemang.productorderservice.dto.OrderInput;
 import com.ernestagyemang.productorderservice.model.Order;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +10,13 @@ import java.util.List;
 public interface OrderService {
     List<Order> getAllOrders();
 
-    List<Order> getAllOrdersByUser(Long userId);
+    List<Order> getAllOrdersByUser(String email);
 
     Order getOrderById(Long id);
 
-    Order createOrder(OrderDto orderDto);
+    Order createOrder(OrderInput orderInput);
 
-    Order updateOrder(OrderDto orderDto);
+    Order updateOrder(OrderInput orderInput);
 
-    void deleteOrder(Long id);
+    String deleteOrder(Long id);
 }

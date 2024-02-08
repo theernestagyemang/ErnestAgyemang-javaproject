@@ -1,7 +1,7 @@
 package com.ernestagyemang.productorderservice.service.interfaces;
 
-import com.ernestagyemang.productorderservice.dto.OrderDto;
-import com.ernestagyemang.productorderservice.dto.ProductLineDto;
+import com.ernestagyemang.productorderservice.dto.OrderInput;
+import com.ernestagyemang.productorderservice.dto.ProductLineInput;
 import com.ernestagyemang.productorderservice.model.Order;
 import com.ernestagyemang.productorderservice.model.Product;
 import com.ernestagyemang.productorderservice.model.ProductLine;
@@ -11,13 +11,13 @@ import java.util.List;
 
 @Service
 public interface ProductLineService {
-    ProductLine getProductLineById(Long id);
+    List<ProductLine> getProductLinesByOrder(Order order);
 
-    ProductLine createProductLine(ProductLineDto productLineDto);
+    List<ProductLine> saveAllProductLines(List<ProductLineInput> productLineInputList, Order order);
 
-    List<ProductLine> saveAllProductLines(List<ProductLineDto> productLineDtoList, Order order);
+    List<ProductLine> updateAllProductLines(List<ProductLineInput> productLineInputList, Order order);
 
-    List<ProductLine> updateAllProductLines(List<ProductLineDto> productLineDtoList, Order order);
+    List<Product> getProductsByOrder(Long id);
 
-    List<Product> getProductsByOrder(OrderDto orderDto);
+    void deleteProductLine(Long id);
 }

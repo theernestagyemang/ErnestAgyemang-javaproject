@@ -1,6 +1,6 @@
 package com.ernestagyemang.productorderservice.service.implementations;
 
-import com.ernestagyemang.productorderservice.dto.ProductDto;
+import com.ernestagyemang.productorderservice.dto.ProductInput;
 import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.Product;
 import com.ernestagyemang.productorderservice.repository.ProductRepository;
@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
+        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product with id " + id + " not found"));
     }
 
     @Override
@@ -38,29 +38,34 @@ public class ProductServiceImpl implements ProductService {
         return lowStockProducts;
     }
 
+    public void saveProduct(Product product) {
+        productRepository.save(product);
+    }
+
     @Override
-    public Product createProduct(ProductDto productDto) {
+    public Product createProduct(ProductInput productInput) {
         Product product = Product.builder()
-                .name(productDto.getName())
-                .stock(productDto.getStock())
-                .price(productDto.getPrice())
+                .name(productInput.getName())
+                .stock(productInput.getStock())
+                .price(productInput.getPrice())
                 .build();
         return productRepository.save(product);
     }
 
     @Override
-    public Product updateProduct(ProductDto productDto) {
-        Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new NotFoundException("Product not found"));
-        product.setName(productDto.getName());
-        product.setStock(productDto.getStock());
-        product.setPrice(productDto.getPrice());
+    public Product updateProduct(ProductInput productInput) {
+        Product product = productRepository.findById(productInput.getId()).orElseThrow(() -> new NotFoundException("Product with id " + productInput.getId() + " not found"));
+        product.setName(productInput.getName());
+        product.setStock(productInput.getStock());
+        product.setPrice(productInput.getPrice());
         return productRepository.save(product);
     }
 
     @Override
-    public void deleteProduct(Long id) {
-        productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
+    public String deleteProduct(Long id) {
+        productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product with id " + id + " not found"));
         productRepository.deleteById(id);
+        return "Product with id " + id + " has been deleted";
     }
 
 }

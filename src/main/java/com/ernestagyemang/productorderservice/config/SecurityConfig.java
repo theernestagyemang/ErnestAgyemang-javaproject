@@ -22,33 +22,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+@EnableMethodSecurity(securedEnabled = true)
+public class SecurityConfig{
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/graphql").authenticated()
-                                .anyRequest().permitAll()
-                )
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable);
-        return http.build();
-    }
-
-    @Bean
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
-                .and()
-                .withUser("user").password(passwordEncoder().encode("user")).roles("USER");
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
+    public InMemoryUserDetailsManager userDetailsService() {
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder().encode("admin"))
@@ -64,6 +42,27 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
         return new InMemoryUserDetailsManager(user, admin);
     }
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+//                .authorizeHttpRequests(req ->
+//                        req.requestMatchers("/graphql").authenticated()
+//                                .anyRequest().permitAll()
+//                )
+                .formLogin(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
+
+   /* @Bean
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .inMemoryAuthentication()
+                .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
+                .and()
+                .withUser("user").password(passwordEncoder().encode("user")).roles("USER");
+    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {

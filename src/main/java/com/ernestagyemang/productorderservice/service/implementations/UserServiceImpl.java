@@ -1,17 +1,21 @@
 package com.ernestagyemang.productorderservice.service.implementations;
 
-import com.ernestagyemang.productorderservice.dto.UserDto;
+import com.ernestagyemang.productorderservice.dto.UserInput;
 import com.ernestagyemang.productorderservice.enums.UserRole;
 import com.ernestagyemang.productorderservice.exceptions.Duplicate409Exception;
+import com.ernestagyemang.productorderservice.exceptions.InValidEmailException;
 import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.User;
 import com.ernestagyemang.productorderservice.repository.UserRepository;
 import com.ernestagyemang.productorderservice.service.interfaces.UserService;
+import graphql.GraphqlErrorBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -26,34 +30,55 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public User getUserById(Long id){
+            return userRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("User with id " + id + " does not exist"));
+    }
+
+    public User getUserByEmail(String email){
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User with email " + email + " does not exist"));
     }
 
     @Override
-    public User createUser(UserDto userDto) {
-        userRepository.findByEmail(userDto.getEmail()).orElseThrow(() -> new Duplicate409Exception("User with email " + userDto.getEmail() + " already exists"));
+    public User createUser(UserInput userInput) {
+        validateEmailFormat(userInput.getEmail());
+        userRepository.findByEmail(userInput.getEmail()).ifPresent(u -> {
+            throw new Duplicate409Exception("User with email " + userInput.getEmail() + " already exists");
+        });
         return userRepository.save(User.builder()
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .role(UserRole.valueOf(userDto.getRole().toUpperCase()))
-                .password(passwordEncoder.encode(userDto.getPassword()))
+                .name(userInput.getName())
+                .email(userInput.getEmail())
+                .role(UserRole.valueOf(userInput.getRole().toUpperCase()))
+                .password(passwordEncoder.encode(userInput.getPassword()))
                 .build());
+
     }
 
     @Override
-    public User updateUser(UserDto userDto) {
-        User user = userRepository.findById(userDto.getId()).orElseThrow(() -> new NotFoundException("User with id " + userDto.getId() + " does not exist"));
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setRole(UserRole.valueOf(userDto.getRole().toUpperCase()));
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    public User updateUser(UserInput userInput) {
+        validateEmailFormat(userInput.getEmail());
+        User user = userRepository.findById(userInput.getId()).orElseThrow(() -> new NotFoundException("User with id " + userInput.getId() + " does not exist"));
+        user.setName(userInput.getName());
+        user.setEmail(userInput.getEmail());
+        user.setRole(UserRole.valueOf(userInput.getRole().toUpperCase()));
+        user.setPassword(passwordEncoder.encode(userInput.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public String deleteUser(Long id) {
         userRepository.findById(id).orElseThrow(() -> new NotFoundException("User with id " + id + " does not exist"));
         userRepository.deleteById(id);
+        return "User with id " + id + " has been deleted";
+    }
+
+    private void validateEmailFormat(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()) {
+            throw new InValidEmailException("Invalid email format");
+        }
     }
 }

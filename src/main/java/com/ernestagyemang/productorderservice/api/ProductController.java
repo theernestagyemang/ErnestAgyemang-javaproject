@@ -1,7 +1,7 @@
 package com.ernestagyemang.productorderservice.api;
 
-import com.ernestagyemang.productorderservice.dto.OrderDto;
-import com.ernestagyemang.productorderservice.dto.ProductDto;
+import com.ernestagyemang.productorderservice.dto.OrderInput;
+import com.ernestagyemang.productorderservice.dto.ProductInput;
 import com.ernestagyemang.productorderservice.model.Product;
 import com.ernestagyemang.productorderservice.service.implementations.ProductLineServiceImpl;
 import com.ernestagyemang.productorderservice.service.implementations.ProductServiceImpl;
@@ -30,27 +30,27 @@ public class ProductController {
     }
 
     @QueryMapping
-    public List<Product> getProductsByOrder(@Argument OrderDto orderDto) {
-        return productLineService.getProductsByOrder(orderDto);
+    public List<Product> getProductsByOrder(@Argument Long id) {
+        return productLineService.getProductsByOrder(id);
     }
 
     @QueryMapping
-    public List<Product> getLowStockProducts(@Argument int threshold) {
+    public List<Product> getLowStockProducts(@Argument Integer threshold) {
         return productService.getLowStockProducts(threshold);
     }
 
     @MutationMapping
-    public Product createProduct(@Argument ProductDto productDto) {
-        return productService.createProduct(productDto);
+    public Product createProduct(@Argument ProductInput productInput) {
+        return productService.createProduct(productInput);
     }
 
     @MutationMapping
-    public Product updateProduct(@Argument ProductDto productDto) {
-        return productService.updateProduct(productDto);
+    public Product updateProduct(@Argument ProductInput productInput) {
+        return productService.updateProduct(productInput);
     }
 
     @MutationMapping
-    public void deleteProduct(@Argument Long id) {
-        productService.deleteProduct(id);
+    public String deleteProduct(@Argument Long id) {
+        return productService.deleteProduct(id);
     }
 }

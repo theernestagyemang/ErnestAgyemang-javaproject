@@ -1,6 +1,6 @@
 package com.ernestagyemang.productorderservice.service.interfaces;
 
-import com.ernestagyemang.productorderservice.dto.UserDto;
+import com.ernestagyemang.productorderservice.dto.UserInput;
 import com.ernestagyemang.productorderservice.model.User;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +12,9 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    User createUser(UserDto userDto);
+    User createUser(UserInput userInput);
 
-    User updateUser(UserDto userDto);
+    User updateUser(UserInput userInput);
 
-    void deleteUser(Long id);
+    String deleteUser(Long id);
 }

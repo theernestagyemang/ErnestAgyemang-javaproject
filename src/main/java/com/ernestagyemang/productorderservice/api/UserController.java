@@ -1,6 +1,6 @@
 package com.ernestagyemang.productorderservice.api;
 
-import com.ernestagyemang.productorderservice.dto.UserDto;
+import com.ernestagyemang.productorderservice.dto.UserInput;
 import com.ernestagyemang.productorderservice.model.User;
 import com.ernestagyemang.productorderservice.service.implementations.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -22,23 +22,23 @@ public class UserController {
     }
 
     @QueryMapping
-    public User getUserById(Long id) {
+    public User getUserById(@Argument Long id){
         return userService.getUserById(id);
     }
 
     @MutationMapping
-    public User createUser(@Argument UserDto userDto) {
-        return userService.createUser(userDto);
+    public User createUser(@Argument UserInput userInput) {
+        return userService.createUser(userInput);
     }
 
     @MutationMapping
-    public User updateUser(@Argument UserDto userDto) {
-        return userService.updateUser(userDto);
+    public User updateUser(@Argument UserInput userInput) {
+        return userService.updateUser(userInput);
     }
 
     @MutationMapping
-    public void deleteUser(Long id) {
-        userService.deleteUser(id);
+    public String deleteUser(@Argument Long id) {
+        return userService.deleteUser(id);
     }
 
 }

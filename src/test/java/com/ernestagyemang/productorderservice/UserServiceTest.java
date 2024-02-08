@@ -1,6 +1,6 @@
 package com.ernestagyemang.productorderservice;
 
-import com.ernestagyemang.productorderservice.dto.UserDto;
+import com.ernestagyemang.productorderservice.dto.UserInput;
 import com.ernestagyemang.productorderservice.enums.UserRole;
 import com.ernestagyemang.productorderservice.model.User;
 import com.ernestagyemang.productorderservice.repository.UserRepository;
@@ -11,9 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -27,7 +24,7 @@ public class UserServiceTest {
     @Test
     public void testCreateUser() {
         // Mocking data
-        UserDto userInput = new UserDto(null,"John Doe", "john@example.com", "password123", "USER");
+        UserInput userInput = new UserInput(null,"John Doe", "john@example.com", "password123", "USER");
 
         // Mocking behavior
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenAnswer(invocation -> {

@@ -22,6 +22,6 @@ public class ProductLine {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id")
     private Order order;
 }

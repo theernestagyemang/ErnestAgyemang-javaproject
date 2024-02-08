@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductLineDto {
+public class OrderInput {
     private Long id;
-    private Integer quantity;
-    private Long productId;
-    private Long orderId;
+    private List<ProductLineInput> productLineInputList;
+    private Long userId;
 }

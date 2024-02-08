@@ -18,7 +18,7 @@ input UserUpdateInput {
     name: String!
     email: String!
     password: String!
-    role: [String!]!
+    role: String!
 }
 
 type Product {
@@ -35,12 +35,13 @@ input ProductInput {
 }
 
 input ProductUpdateInput {
+    id: ID!
     name: String!
     stock: Int!
     price: Float!
 }
 
-type ProductLine {
+type ProductLineList {
     id: ID!
     product: Product!
     quantity: Int!
@@ -52,15 +53,27 @@ input ProductLineInput {
     quantity: Int!
 }
 
+input ProductLineUpdateInput {
+    id: ID!
+    productId: ID!
+    quantity: Int!
+}
+
 type Order {
     id: ID!
-    products: [ProductLine!]!
+    productLineList: [ProductLineList!]!
     user: User!
 }
 
 input OrderInput {
     userId: ID!
-    productLinesDto: [ProductLineInput!]!
+    productLineInputList: [ProductLineInput!]!
+}
+
+input OrderUpdateInput {
+    id: ID!
+    userId: ID!
+    productLineInputList: [ProductLineUpdateInput!]!
 }
 
 type Query {
@@ -69,22 +82,22 @@ type Query {
     getAllProducts: [Product!]!
     getProductById(id: ID!): Product
     getLowStockProducts(threshold: Int!): [Product!]!
-    getProductsByOrder(orderDto: OrderInput!): [Product!]!
+    getProductsByOrder(id: ID!): [Product!]!
     getAllOrders: [Order!]!
     getOrderById(id: ID!): Order
     getAllOrdersByUser(userId: ID!): [Order!]!
 }
 
 type Mutation {
-    createUser(userDto: UserInput!): User
-    updateUser(userDto: UserUpdateInput!): User
-    deleteUser(id: ID!): Boolean
-    createProduct(productDto: ProductInput!): Product
-    updateProduct(productDto: ProductUpdateInput!): Product
-    deleteProduct(id: ID!): Boolean
-    createOrder(orderDto: OrderInput!): Order
-    updateOrder(orderDto: OrderInput!): Order
-    deleteOrder(id: ID!): Boolean
+    createUser(userInput: UserInput!): User
+    updateUser(userInput: UserUpdateInput!): User
+    deleteUser(id: ID!): String
+    createProduct(productInput: ProductInput!): Product
+    updateProduct(productInput: ProductUpdateInput!): Product
+    deleteProduct(id: ID!): String
+    createOrder(orderInput: OrderInput!): Order
+    updateOrder(orderInput: OrderUpdateInput!): Order
+    deleteOrder(id: ID!): String
 }
 
 

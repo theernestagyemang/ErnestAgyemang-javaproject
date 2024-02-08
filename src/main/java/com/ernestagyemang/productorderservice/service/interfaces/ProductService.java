@@ -1,6 +1,6 @@
 package com.ernestagyemang.productorderservice.service.interfaces;
 
-import com.ernestagyemang.productorderservice.dto.ProductDto;
+import com.ernestagyemang.productorderservice.dto.ProductInput;
 import com.ernestagyemang.productorderservice.model.Product;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +14,9 @@ public interface ProductService {
 
     List<Product> getLowStockProducts(int threshold);
 
-    Product createProduct(ProductDto productDto);
+    Product createProduct(ProductInput productInput);
 
-    Product updateProduct(ProductDto productDto);
+    Product updateProduct(ProductInput productInput);
 
-    void deleteProduct(Long id);
+    String deleteProduct(Long id);
 }
