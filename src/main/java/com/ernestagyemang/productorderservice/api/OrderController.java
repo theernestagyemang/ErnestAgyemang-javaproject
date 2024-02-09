@@ -3,6 +3,7 @@ package com.ernestagyemang.productorderservice.api;
 import com.ernestagyemang.productorderservice.dto.OrderInput;
 import com.ernestagyemang.productorderservice.model.Order;
 import com.ernestagyemang.productorderservice.service.implementations.OrderServiceImpl;
+import com.ernestagyemang.productorderservice.service.implementations.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderServiceImpl orderService;
+    private final UserServiceImpl userService;
 
     @QueryMapping
     public List<Order> getAllOrders() {
@@ -28,8 +30,13 @@ public class OrderController {
     }
 
     @QueryMapping
+    public List<Order> findAllOrdersByUser(@Argument Long userId) {
+        return orderService.findAllOrdersByUser(userId);
+    }
+
+    @QueryMapping
     public List<Order> getAllOrdersByUser(Principal principal) {
-        return orderService.getAllOrdersByUser(principal.getName());
+        return orderService.getAllOrdersByUser(userService.currentUser(principal));
     }
 
     @MutationMapping

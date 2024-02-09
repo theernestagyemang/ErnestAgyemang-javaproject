@@ -85,7 +85,7 @@ type Query {
     getProductsByOrder(id: ID!): [Product!]!
     getAllOrders: [Order!]!
     getOrderById(id: ID!): Order
-    getAllOrdersByUser(userId: ID!): [Order!]!
+    findAllOrdersByUser(userId: ID!): [Order!]!
 }
 
 type Mutation {

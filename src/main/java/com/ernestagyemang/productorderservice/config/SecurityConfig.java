@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -46,23 +47,12 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(req ->
-//                        req.requestMatchers("/graphql").authenticated()
-//                                .anyRequest().permitAll()
-//                )
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(AbstractHttpConfigurer::disable);
+                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                .anyRequest().authenticated())
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
-
-   /* @Bean
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN")
-                .and()
-                .withUser("user").password(passwordEncoder().encode("user")).roles("USER");
-    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {

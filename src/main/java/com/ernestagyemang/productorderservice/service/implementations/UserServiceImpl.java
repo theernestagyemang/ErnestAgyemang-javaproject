@@ -10,9 +10,12 @@ import com.ernestagyemang.productorderservice.repository.UserRepository;
 import com.ernestagyemang.productorderservice.service.interfaces.UserService;
 import graphql.GraphqlErrorBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,6 +82,14 @@ public class UserServiceImpl implements UserService {
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()) {
             throw new InValidEmailException("Invalid email format");
+        }
+    }
+
+    public User currentUser(Principal principal){
+        try {
+            return (User) ((Authentication) principal).getPrincipal();
+        }catch (NotFoundException n){
+            throw  new NotFoundException("Invalid email format");
         }
     }
 }

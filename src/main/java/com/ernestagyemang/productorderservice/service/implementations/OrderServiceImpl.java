@@ -6,6 +6,7 @@ import com.ernestagyemang.productorderservice.exceptions.Duplicate409Exception;
 import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.Order;
 import com.ernestagyemang.productorderservice.model.ProductLine;
+import com.ernestagyemang.productorderservice.model.User;
 import com.ernestagyemang.productorderservice.repository.OrderRepository;
 import com.ernestagyemang.productorderservice.service.interfaces.OrderService;
 import jakarta.transaction.Transactional;
@@ -30,8 +31,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrdersByUser(String email) {
-        return orderRepository.findAllByUser(userService.getUserByEmail(email));
+    public List<Order> findAllOrdersByUser(Long userId) {
+        return orderRepository.findAllByUser(userService.getUserById(userId));
+    }
+
+    @Override
+    public List<Order> getAllOrdersByUser(User user) {
+        return orderRepository.findAllByUser(user);
     }
 
     @Override

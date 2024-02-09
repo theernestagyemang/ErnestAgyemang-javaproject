@@ -137,8 +137,12 @@ public class ProductLineServiceImpl implements ProductLineService {
 
 
     @Override
+    @Transactional
     public void deleteProductLine(Long id) {
-        productLineRepository.findById(id).orElseThrow(() -> new NotFoundException("ProductLine with id " + id + " not found"));
+        ProductLine productLine = productLineRepository.findById(id).orElseThrow(() -> new NotFoundException("ProductLine with id " + id + " not found"));
+        Product product = productLine.getProduct();
+        product.setStock(productLine.getProduct().getStock() + productLine.getQuantity());
+        productService.saveProduct(product);
         productLineRepository.deleteById(id);
     }
 
