@@ -26,7 +26,7 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @QueryMapping
-    public User getUserById(@Argument Long id){
+    public User getUserById(@Argument Long id) {
         return userService.getUserById(id);
     }
 

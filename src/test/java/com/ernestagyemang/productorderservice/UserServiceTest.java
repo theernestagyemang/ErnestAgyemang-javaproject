@@ -24,7 +24,7 @@ public class UserServiceTest {
     @Test
     public void testCreateUser() {
         // Mocking data
-        UserInput userInput = new UserInput(null,"John Doe", "john@example.com", "password123", "USER");
+        UserInput userInput = new UserInput(null, "John Doe", "john@example.com", "password123", "USER");
 
         // Mocking behavior
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenAnswer(invocation -> {

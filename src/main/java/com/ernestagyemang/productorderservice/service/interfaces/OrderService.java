@@ -2,7 +2,6 @@ package com.ernestagyemang.productorderservice.service.interfaces;
 
 import com.ernestagyemang.productorderservice.dto.OrderInput;
 import com.ernestagyemang.productorderservice.model.Order;
-import com.ernestagyemang.productorderservice.model.User;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;

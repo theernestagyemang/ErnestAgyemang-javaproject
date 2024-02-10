@@ -1,6 +1,5 @@
 package com.ernestagyemang.productorderservice.api;
 
-import com.ernestagyemang.productorderservice.dto.OrderInput;
 import com.ernestagyemang.productorderservice.dto.ProductInput;
 import com.ernestagyemang.productorderservice.model.Product;
 import com.ernestagyemang.productorderservice.service.implementations.ProductLineServiceImpl;

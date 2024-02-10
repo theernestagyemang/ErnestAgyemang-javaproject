@@ -9,10 +9,8 @@ import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.User;
 import com.ernestagyemang.productorderservice.repository.UserRepository;
 import com.ernestagyemang.productorderservice.service.interfaces.UserService;
-import graphql.GraphqlErrorBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +33,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id){
-            return userRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException("User with id " + id + " does not exist"));
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with id " + id + " does not exist"));
     }
 
-    public User getUserByEmail(String email){
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User with email " + email + " does not exist"));
     }
@@ -92,12 +90,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public User currentUser(Principal principal){
+    public User currentUser(Principal principal) {
         try {
             MyUserDetailsDto userDetails = (MyUserDetailsDto) ((Authentication) principal).getPrincipal();
             return userDetails.getUser();
-        }catch (NotFoundException n){
-            throw  new NotFoundException("Invalid email format");
+        } catch (NotFoundException n) {
+            throw new NotFoundException("Invalid email format");
         }
     }
 }

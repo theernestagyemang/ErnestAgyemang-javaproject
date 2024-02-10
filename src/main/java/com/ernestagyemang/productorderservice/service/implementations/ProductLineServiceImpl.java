@@ -1,6 +1,5 @@
 package com.ernestagyemang.productorderservice.service.implementations;
 
-import com.ernestagyemang.productorderservice.dto.OrderInput;
 import com.ernestagyemang.productorderservice.dto.ProductLineInput;
 import com.ernestagyemang.productorderservice.exceptions.LowStockException;
 import com.ernestagyemang.productorderservice.exceptions.NotFoundException;

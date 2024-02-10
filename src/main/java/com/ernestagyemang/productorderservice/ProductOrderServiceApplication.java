@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class ProductOrderServiceApplication {
 
+    private final PasswordEncoder passwordEncoder;
+
     public ProductOrderServiceApplication(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
@@ -20,7 +22,6 @@ public class ProductOrderServiceApplication {
         SpringApplication.run(ProductOrderServiceApplication.class, args);
     }
 
-    private final PasswordEncoder passwordEncoder;
     @Bean
     CommandLineRunner commandLineRunner(UserRepository userRepository) {
         return args -> {
