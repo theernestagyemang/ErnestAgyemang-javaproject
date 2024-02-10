@@ -1,5 +1,6 @@
 package com.ernestagyemang.productorderservice.service.implementations;
 
+import com.ernestagyemang.productorderservice.dto.MyUserDetailsDto;
 import com.ernestagyemang.productorderservice.dto.UserInput;
 import com.ernestagyemang.productorderservice.enums.UserRole;
 import com.ernestagyemang.productorderservice.exceptions.Duplicate409Exception;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +61,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UserInput userInput) {
+    public User updateUser(UserInput userInput, Principal principal) {
+        if (currentUser(principal).getRole() == UserRole.USER) {
+            if (!Objects.equals(currentUser(principal).getId(), userInput.getId())) {
+                throw new NotFoundException("You do not have permission to update another user");
+            }
+        }
         validateEmailFormat(userInput.getEmail());
         User user = userRepository.findById(userInput.getId()).orElseThrow(() -> new NotFoundException("User with id " + userInput.getId() + " does not exist"));
         user.setName(userInput.getName());
@@ -87,7 +94,8 @@ public class UserServiceImpl implements UserService {
 
     public User currentUser(Principal principal){
         try {
-            return (User) ((Authentication) principal).getPrincipal();
+            MyUserDetailsDto userDetails = (MyUserDetailsDto) ((Authentication) principal).getPrincipal();
+            return userDetails.getUser();
         }catch (NotFoundException n){
             throw  new NotFoundException("Invalid email format");
         }

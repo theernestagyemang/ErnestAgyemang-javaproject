@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,13 +32,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findAllOrdersByUser(Long userId) {
+    public List<Order> getAllOrdersByUser(Long userId, Principal principal) {
         return orderRepository.findAllByUser(userService.getUserById(userId));
-    }
-
-    @Override
-    public List<Order> getAllOrdersByUser(User user) {
-        return orderRepository.findAllByUser(user);
     }
 
     @Override

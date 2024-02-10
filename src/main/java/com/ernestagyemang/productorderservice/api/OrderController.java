@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -19,36 +20,37 @@ public class OrderController {
     private final OrderServiceImpl orderService;
     private final UserServiceImpl userService;
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @QueryMapping
-    public List<Order> getAllOrders() {
+    public List<Order> getAllOrders(Principal principal) {
         return orderService.getAllOrders();
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @QueryMapping
     public Order getOrderById(@Argument Long id) {
         return orderService.getOrderById(id);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @QueryMapping
-    public List<Order> findAllOrdersByUser(@Argument Long userId) {
-        return orderService.findAllOrdersByUser(userId);
+    public List<Order> getAllOrdersByUser(@Argument Long userId, Principal principal) {
+        return orderService.getAllOrdersByUser(userId, principal);
     }
 
-    @QueryMapping
-    public List<Order> getAllOrdersByUser(Principal principal) {
-        return orderService.getAllOrdersByUser(userService.currentUser(principal));
-    }
-
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @MutationMapping
     public Order createOrder(@Argument OrderInput orderInput) {
         return orderService.createOrder(orderInput);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @MutationMapping
     public Order updateOrder(@Argument OrderInput orderInput) {
         return orderService.updateOrder(orderInput);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @MutationMapping
     public String deleteOrder(@Argument Long id) {
         return orderService.deleteOrder(id);

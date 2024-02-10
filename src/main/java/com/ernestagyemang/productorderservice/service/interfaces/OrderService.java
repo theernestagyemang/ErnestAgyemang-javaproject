@@ -5,15 +5,14 @@ import com.ernestagyemang.productorderservice.model.Order;
 import com.ernestagyemang.productorderservice.model.User;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
 public interface OrderService {
     List<Order> getAllOrders();
 
-    List<Order> findAllOrdersByUser(Long userId);
-
-    List<Order> getAllOrdersByUser(User user);
+    List<Order> getAllOrdersByUser(Long userId, Principal principal);
 
     Order getOrderById(Long id);
 
