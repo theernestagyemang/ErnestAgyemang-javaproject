@@ -27,4 +27,18 @@ public class GlobalExceptionHandler {
                 .message(ex.getMessage())
                 .build();
     }
+
+    @GraphQlExceptionHandler
+    public GraphQLError handleNotAuthorizedException(NotAuthorizedException ex) {
+        return GraphQLError.newError()
+                .message(ex.getMessage())
+                .build();
+    }
+
+    @GraphQlExceptionHandler
+    public GraphQLError handleLowStockException(LowStockException ex) {
+        return GraphQLError.newError()
+                .message(ex.getMessage())
+                .build();
+    }
 }

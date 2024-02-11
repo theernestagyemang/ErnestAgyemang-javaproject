@@ -6,6 +6,7 @@ import com.ernestagyemang.productorderservice.model.Product;
 import com.ernestagyemang.productorderservice.model.ProductLine;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -16,7 +17,7 @@ public interface ProductLineService {
 
     List<ProductLine> updateAllProductLines(List<ProductLineInput> productLineInputList, Order order);
 
-    List<Product> getProductsByOrder(Long id);
+    List<Product> getProductsByOrder(Long id, Principal principal);
 
     void deleteProductLine(Long id);
 }

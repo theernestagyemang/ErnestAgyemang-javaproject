@@ -14,5 +14,4 @@ import java.util.List;
 public class OrderInput {
     private Long id;
     private List<ProductLineInput> productLineInputList;
-    private Long userId;
 }

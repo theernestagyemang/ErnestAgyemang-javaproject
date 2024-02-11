@@ -5,6 +5,7 @@ import com.ernestagyemang.productorderservice.dto.UserInput;
 import com.ernestagyemang.productorderservice.enums.UserRole;
 import com.ernestagyemang.productorderservice.exceptions.Duplicate409Exception;
 import com.ernestagyemang.productorderservice.exceptions.InValidEmailException;
+import com.ernestagyemang.productorderservice.exceptions.NotAuthorizedException;
 import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.User;
 import com.ernestagyemang.productorderservice.repository.UserRepository;
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserService {
     public User updateUser(UserInput userInput, Principal principal) {
         if (currentUser(principal).getRole() == UserRole.USER) {
             if (!Objects.equals(currentUser(principal).getId(), userInput.getId())) {
-                throw new NotFoundException("You do not have permission to update another user");
+                throw new NotAuthorizedException("You do not have permission to update another user");
             }
         }
         validateEmailFormat(userInput.getEmail());

@@ -11,6 +11,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -33,10 +34,11 @@ public class ProductController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @QueryMapping
-    public List<Product> getProductsByOrder(@Argument Long id) {
-        return productLineService.getProductsByOrder(id);
+    public List<Product> getProductsByOrder(@Argument Long id, Principal principal) {
+        return productLineService.getProductsByOrder(id, principal);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @QueryMapping
     public List<Product> getLowStockProducts(@Argument Integer threshold) {
         return productService.getLowStockProducts(threshold);

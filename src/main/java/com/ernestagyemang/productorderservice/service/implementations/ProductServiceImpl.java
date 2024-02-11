@@ -23,7 +23,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product with id " + id + " not found"));
+        return productRepository.findById(id).orElseThrow(()
+                -> new NotFoundException("Product with id " + id + " not found"));
     }
 
     @Override
@@ -54,7 +55,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(ProductInput productInput) {
-        Product product = productRepository.findById(productInput.getId()).orElseThrow(() -> new NotFoundException("Product with id " + productInput.getId() + " not found"));
+        Product product = productRepository.findById(productInput.getId()).orElseThrow(()
+                -> new NotFoundException("Product with id " + productInput.getId() + " not found"));
         product.setName(productInput.getName());
         product.setStock(productInput.getStock());
         product.setPrice(productInput.getPrice());
@@ -63,7 +65,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public String deleteProduct(Long id) {
-        productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product with id " + id + " not found"));
+        productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product with id "
+                + id + " not found"));
         productRepository.deleteById(id);
         return "Product with id " + id + " has been deleted";
     }

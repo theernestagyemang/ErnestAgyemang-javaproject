@@ -66,13 +66,11 @@ type Order {
 }
 
 input OrderInput {
-    userId: ID!
     productLineInputList: [ProductLineInput!]!
 }
 
 input OrderUpdateInput {
     id: ID!
-    userId: ID!
     productLineInputList: [ProductLineUpdateInput!]!
 }
 
@@ -85,7 +83,7 @@ type Query {
     getProductsByOrder(id: ID!): [Product!]!
     getAllOrders: [Order!]!
     getOrderById(id: ID!): Order
-    findAllOrdersByUser(userId: ID!): [Order!]!
+    getAllOrdersByUser(userId: ID!): [Order!]!
 }
 
 type Mutation {

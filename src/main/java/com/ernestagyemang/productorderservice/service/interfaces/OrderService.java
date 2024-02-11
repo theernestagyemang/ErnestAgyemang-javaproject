@@ -9,15 +9,15 @@ import java.util.List;
 
 @Service
 public interface OrderService {
-    List<Order> getAllOrders();
+    List<Order> getAllOrders(Principal principal);
 
     List<Order> getAllOrdersByUser(Long userId, Principal principal);
 
-    Order getOrderById(Long id);
+    Order getOrderById(Long id, Principal principal);
 
-    Order createOrder(OrderInput orderInput);
+    Order createOrder(OrderInput orderInput, Principal principal);
 
-    Order updateOrder(OrderInput orderInput);
+    Order updateOrder(OrderInput orderInput, Principal principal);
 
-    String deleteOrder(Long id);
+    String deleteOrder(Long id, Principal principal);
 }

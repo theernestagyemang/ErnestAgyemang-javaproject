@@ -3,7 +3,6 @@ package com.ernestagyemang.productorderservice.api;
 import com.ernestagyemang.productorderservice.dto.OrderInput;
 import com.ernestagyemang.productorderservice.model.Order;
 import com.ernestagyemang.productorderservice.service.implementations.OrderServiceImpl;
-import com.ernestagyemang.productorderservice.service.implementations.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -18,18 +17,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderServiceImpl orderService;
-    private final UserServiceImpl userService;
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @QueryMapping
     public List<Order> getAllOrders(Principal principal) {
-        return orderService.getAllOrders();
+        return orderService.getAllOrders(principal);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @QueryMapping
-    public Order getOrderById(@Argument Long id) {
-        return orderService.getOrderById(id);
+    public Order getOrderById(@Argument Long id, Principal principal) {
+        return orderService.getOrderById(id, principal);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -40,20 +38,20 @@ public class OrderController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @MutationMapping
-    public Order createOrder(@Argument OrderInput orderInput) {
-        return orderService.createOrder(orderInput);
+    public Order createOrder(@Argument OrderInput orderInput, Principal principal) {
+        return orderService.createOrder(orderInput, principal);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @MutationMapping
-    public Order updateOrder(@Argument OrderInput orderInput) {
-        return orderService.updateOrder(orderInput);
+    public Order updateOrder(@Argument OrderInput orderInput, Principal principal) {
+        return orderService.updateOrder(orderInput, principal);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @MutationMapping
-    public String deleteOrder(@Argument Long id) {
-        return orderService.deleteOrder(id);
+    public String deleteOrder(@Argument Long id, Principal principal) {
+        return orderService.deleteOrder(id, principal);
     }
 
 }

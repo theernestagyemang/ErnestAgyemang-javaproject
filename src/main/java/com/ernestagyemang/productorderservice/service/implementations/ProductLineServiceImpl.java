@@ -1,7 +1,9 @@
 package com.ernestagyemang.productorderservice.service.implementations;
 
 import com.ernestagyemang.productorderservice.dto.ProductLineInput;
+import com.ernestagyemang.productorderservice.enums.UserRole;
 import com.ernestagyemang.productorderservice.exceptions.LowStockException;
+import com.ernestagyemang.productorderservice.exceptions.NotAuthorizedException;
 import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.Order;
 import com.ernestagyemang.productorderservice.model.Product;
@@ -13,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +26,7 @@ public class ProductLineServiceImpl implements ProductLineService {
     private final ProductLineRepository productLineRepository;
     private final OrderRepository orderRepository;
     private final ProductServiceImpl productService;
+    private final UserServiceImpl userService;
 
 
     @Override
@@ -31,9 +35,17 @@ public class ProductLineServiceImpl implements ProductLineService {
     }
 
     @Override
-    public List<Product> getProductsByOrder(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new NotFoundException("Order with id " + id + " not found"));
-        return productLineRepository.findAllByOrder(order).stream().map(ProductLine::getProduct).collect(Collectors.toList());
+    public List<Product> getProductsByOrder(Long id, Principal principal) {
+        Order order = orderRepository.findById(id).orElseThrow(()
+                -> new NotFoundException("Order with id " + id + " not found"));
+        if (userService.currentUser(principal).getRole() != UserRole.ADMIN) {
+            if (userService.currentUser(principal) != order.getUser()) {
+                throw new NotAuthorizedException("You did not make order with id " + id
+                        + "and do not  have permission to see this order");
+            }
+        }
+        return productLineRepository.findAllByOrder(order).stream().map(ProductLine::getProduct)
+                .collect(Collectors.toList());
     }
 
 
@@ -46,7 +58,8 @@ public class ProductLineServiceImpl implements ProductLineService {
             Product product = productService.getProductById(productLineInput.getProductId());
             // Check if stock is sufficient
             if (product.getStock() - productLineInput.getQuantity() < 0) {
-                throw new LowStockException("Insufficient stock for product with id " + product.getId());
+                throw new LowStockException("Insufficient stock for product with id "
+                        + product.getId() + "stock left " + product.getStock());
             }
             ProductLine productLine = ProductLine.builder()
                     .product(product)
@@ -55,7 +68,8 @@ public class ProductLineServiceImpl implements ProductLineService {
                     .build();
 
             //Reduce stock of product
-            product.setStock(productService.getProductById(productLineInput.getProductId()).getStock() - productLineInput.getQuantity());
+            product.setStock(productService.getProductById(productLineInput.getProductId()).getStock()
+                    - productLineInput.getQuantity());
             productService.saveProduct(product);
 
             productLines.add(productLine);
@@ -65,21 +79,25 @@ public class ProductLineServiceImpl implements ProductLineService {
 
     @Override
     @Transactional
-    public List<ProductLine> updateAllProductLines(List<ProductLineInput> productLineInputList, Order order) {
+    public List<ProductLine> updateAllProductLines(List<ProductLineInput> productLineInputList
+            , Order order) {
         List<ProductLine> existingProductLines = productLineRepository.findAllByOrder(order);
         List<ProductLine> updatedProductLines = new ArrayList<>();
 
         // Loop through existing ProductLines
         existingProductLines.forEach(productLine -> {
-            ProductLineInput updatedProductLineInput = getProductLineInputById(productLine.getId(), productLineInputList);
+            ProductLineInput updatedProductLineInput = getProductLineInputById(productLine.getId()
+                    , productLineInputList);
             if (updatedProductLineInput != null) {
                 Product product = productService.getProductById(productLine.getProduct().getId());
                 // Update product stock
                 if (product.getStock() - updatedProductLineInput.getQuantity() < 0) {
-                    throw new LowStockException("Insufficient stock for product with id " + product.getId());
+                    throw new LowStockException("Insufficient stock for product with id "
+                            + product.getId());
                 }
                 // Update product stock
-                product.setStock(product.getStock() + productLine.getQuantity() - updatedProductLineInput.getQuantity());
+                product.setStock(product.getStock() + productLine.getQuantity()
+                        - updatedProductLineInput.getQuantity());
                 productService.saveProduct(product);
                 // Update existing ProductLine's quantity
                 productLine.setQuantity(updatedProductLineInput.getQuantity());
@@ -101,7 +119,8 @@ public class ProductLineServiceImpl implements ProductLineService {
                 Product product = productService.getProductById(productLineInput.getProductId());
                 // Check if stock is sufficient
                 if (product.getStock() - productLineInput.getQuantity() < 0) {
-                    throw new LowStockException("Insufficient stock for product with id " + product.getId());
+                    throw new LowStockException("Insufficient stock for product with id "
+                            + product.getId());
                 }
                 // Update product stock
                 product.setStock(product.getStock() - productLineInput.getQuantity());
@@ -119,7 +138,8 @@ public class ProductLineServiceImpl implements ProductLineService {
         return updatedProductLines;
     }
 
-    private ProductLineInput getProductLineInputById(Long productLineId, List<ProductLineInput> productLineInputList) {
+    private ProductLineInput getProductLineInputById(Long productLineId,
+                                                     List<ProductLineInput> productLineInputList) {
         return productLineInputList.stream()
                 .filter(pl -> pl.getId().equals(productLineId))
                 .findFirst()
@@ -138,19 +158,11 @@ public class ProductLineServiceImpl implements ProductLineService {
     @Override
     @Transactional
     public void deleteProductLine(Long id) {
-        ProductLine productLine = productLineRepository.findById(id).orElseThrow(() -> new NotFoundException("ProductLine with id " + id + " not found"));
+        ProductLine productLine = productLineRepository.findById(id).orElseThrow(()
+                -> new NotFoundException("ProductLine with id " + id + " not found"));
         Product product = productLine.getProduct();
         product.setStock(productLine.getProduct().getStock() + productLine.getQuantity());
         productService.saveProduct(product);
         productLineRepository.deleteById(id);
-    }
-
-    private ProductLineInput getProductLineDtoById(Long productLineId, List<ProductLineInput> productLineInputList) {
-        for (ProductLineInput productLineInput : productLineInputList) {
-            if (productLineInput.getId().equals(productLineId)) {
-                return productLineInput;
-            }
-        }
-        throw new NotFoundException("ProductLine with id " + productLineId + " not found");
     }
 }
