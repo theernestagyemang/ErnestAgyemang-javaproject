@@ -14,7 +14,7 @@ import static com.ernestagyemang.productorderservice.enums.Permission.*;
 @RequiredArgsConstructor
 public enum UserRole {
 
-    ADMIN(
+    ROLE_ADMIN(
             Set.of(
                     ADMIN_READ,
                     ADMIN_UPDATE,
@@ -26,7 +26,7 @@ public enum UserRole {
                     USER_CREATE
             )
     ),
-    USER(
+    ROLE_USER(
             Set.of(
                     USER_READ,
                     USER_UPDATE,

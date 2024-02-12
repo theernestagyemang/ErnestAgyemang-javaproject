@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService {
                 .name(userInput.getName())
                 .email(userInput.getEmail())
                 .role(UserRole.valueOf(userInput.getRole().toUpperCase()))
+                .active(true)
                 .password(passwordEncoder.encode(userInput.getPassword()))
                 .build());
 
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(UserInput userInput, Principal principal) {
-        if (currentUser(principal).getRole() == UserRole.USER) {
+        if (currentUser(principal).getRole() == UserRole.ROLE_USER) {
             if (!Objects.equals(currentUser(principal).getId(), userInput.getId())) {
                 throw new NotAuthorizedException("You do not have permission to update another user");
             }
@@ -70,6 +71,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userInput.getId()).orElseThrow(() -> new NotFoundException("User with id " + userInput.getId() + " does not exist"));
         user.setName(userInput.getName());
         user.setEmail(userInput.getEmail());
+        user.setActive(true);
         user.setRole(UserRole.valueOf(userInput.getRole().toUpperCase()));
         user.setPassword(passwordEncoder.encode(userInput.getPassword()));
         return userRepository.save(user);

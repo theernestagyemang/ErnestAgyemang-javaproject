@@ -30,7 +30,7 @@ public class ProductOrderServiceApplication {
                     .email("admin")
                     .password(passwordEncoder.encode("admin"))
                     .active(true)
-                    .role(UserRole.ADMIN)
+                    .role(UserRole.ROLE_ADMIN)
                     .build();
             userRepository.save(user);
         };

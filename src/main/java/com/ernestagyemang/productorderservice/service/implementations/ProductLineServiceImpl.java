@@ -38,7 +38,7 @@ public class ProductLineServiceImpl implements ProductLineService {
     public List<Product> getProductsByOrder(Long id, Principal principal) {
         Order order = orderRepository.findById(id).orElseThrow(()
                 -> new NotFoundException("Order with id " + id + " not found"));
-        if (userService.currentUser(principal).getRole() != UserRole.ADMIN) {
+        if (userService.currentUser(principal).getRole() != UserRole.ROLE_ADMIN) {
             if (userService.currentUser(principal) != order.getUser()) {
                 throw new NotAuthorizedException("You did not make order with id " + id
                         + "and do not  have permission to see this order");
@@ -103,7 +103,6 @@ public class ProductLineServiceImpl implements ProductLineService {
                 productLine.setQuantity(updatedProductLineInput.getQuantity());
                 updatedProductLines.add(productLine);
             } else {
-                // ProductLine exists in the order but not in the updated list, set quantity to 0
                 Product product = productService.getProductById(productLine.getProduct().getId());
                 product.setStock(product.getStock() + productLine.getQuantity());
                 productService.saveProduct(product);
@@ -115,9 +114,7 @@ public class ProductLineServiceImpl implements ProductLineService {
         // Loop through new ProductLines
         productLineInputList.forEach(productLineInput -> {
             if (getProductLineById(productLineInput.getId(), existingProductLines) == null) {
-                // New product line, create a new ProductLine
                 Product product = productService.getProductById(productLineInput.getProductId());
-                // Check if stock is sufficient
                 if (product.getStock() - productLineInput.getQuantity() < 0) {
                     throw new LowStockException("Insufficient stock for product with id "
                             + product.getId());
@@ -146,7 +143,6 @@ public class ProductLineServiceImpl implements ProductLineService {
                 .orElse(null);
     }
 
-    // Helper method to get ProductLine by ID
     private ProductLine getProductLineById(Long productLineId, List<ProductLine> productLines) {
         return productLines.stream()
                 .filter(pl -> pl.getId().equals(productLineId))

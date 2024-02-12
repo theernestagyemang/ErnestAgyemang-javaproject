@@ -30,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders(Principal principal) {
-        if (userService.currentUser(principal).getRole() == UserRole.USER) {
+        if (userService.currentUser(principal).getRole() == UserRole.ROLE_USER) {
             return orderRepository.findAllByUser(userService.currentUser(principal));
         }
         return orderRepository.findAll();
@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrdersByUser(Long userId, Principal principal) {
-        if (userService.currentUser(principal).getRole() == UserRole.USER) {
+        if (userService.currentUser(principal).getRole() == UserRole.ROLE_USER) {
             if (!Objects.equals(userService.currentUser(principal).getId(), userId)) {
                 throw new NotAuthorizedException("You do not  have permission to see this order with id "
                         + userId);
@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(Long id, Principal principal) {
         Order order = orderRepository.findById(id).orElseThrow(()
                 -> new NotFoundException("Order with id " + id + " not found"));
-        if (userService.currentUser(principal).getRole() == UserRole.USER) {
+        if (userService.currentUser(principal).getRole() == UserRole.ROLE_USER) {
             if (!Objects.equals(userService.currentUser(principal).getId(), order.getUser().getId())) {
                 throw new NotAuthorizedException("You did not make this order with id " + id
                         + " and do not  have permission to this order");
@@ -63,7 +63,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order createOrder(OrderInput orderInput, Principal principal) {
-        // Create Order entity
         Order order = Order.builder()
                 .user(userService.currentUser(principal))
                 .build();
@@ -73,7 +72,6 @@ public class OrderServiceImpl implements OrderService {
         Set<Long> productIds = new HashSet<>();
         for (ProductLineInput productLineInput : orderInput.getProductLineInputList()) {
             if (!productIds.add(productLineInput.getProductId())) {
-                // Duplicate product ID found
                 throw new Duplicate409Exception("Duplicate product ID in the productLines: "
                         + productLineInput.getProductId());
             }
@@ -82,9 +80,8 @@ public class OrderServiceImpl implements OrderService {
         // Create ProductLines with the Order
         List<ProductLine> productLines =
                 productLineService.saveAllProductLines(orderInput.getProductLineInputList(), order);
-        order.setProductLineList(productLines); // Associate ProductLines with the Order
+        order.setProductLineList(productLines);
 
-        // Save the Order with associated ProductLines
         orderRepository.save(order);
 
         return order;
