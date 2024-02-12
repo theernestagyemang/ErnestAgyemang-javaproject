@@ -66,14 +66,12 @@ List the main dependencies used in the project.
 - Spring Security
 - GraphQL
 - Lombok
-- JUnit
-- Mockito
 
 ## Setup
 
 Instructions on how to set up the project locally.
 
-1. Clone the repository:
+1. Clone and run the repository:
 
    ```bash
    git clone https://github.com/theernestagyemang/ErnestAgyemang-javaproject.git
@@ -92,7 +90,270 @@ Access the GraphQL endpoint:
    ```
 
 
-Additional Information
-Any additional information or notes about the project.
+## GraphIQL Test Queries Sample
 
-For development purposes, the H2 Database Console is accessible at http://localhost:8080/h2-console. Use JDBC URL jdbc:h2:mem:testdb, username h2, and no password.
+```graphql
+query GetAllUsers{
+    getAllUsers{
+        id
+        name
+        email
+        password
+        role
+    }
+}
+
+query GetUserById{
+    getUserById(id:10){
+        id
+        name
+        email
+        password
+        role
+    }
+}
+
+query GetAllProducts{
+    getAllProducts{
+        id
+        name
+        stock
+        price
+    }
+}
+
+query GetProductById{
+    getProductById(id:1){
+        id
+        name
+        stock
+        price
+    }
+}
+
+query GetAllOrders{
+    getAllOrders {
+        id
+        productLineList {
+            id
+            product {
+                id
+                name
+                stock
+                price
+            }
+            quantity
+        }
+        user {
+            id
+            name
+            email
+        }
+    }
+}
+
+query GetOrderById{
+    getOrderById(id: 1) {
+        id
+        productLineList {
+            id
+            product {
+                id
+                name
+                stock
+                price
+            }
+            quantity
+        }
+        user {
+            id
+            name
+            email
+        }
+    }
+}
+
+query GetProductsByOrder{
+    getProductsByOrder(id: 1) {
+        id
+        name
+        stock
+        price
+    }
+}
+
+query GetAllOrdersByUser{
+    getAllOrdersByUser(userId: 1) {
+        id
+        productLineList {
+            id
+            product {
+                id
+                name
+                stock
+                price
+            }
+            quantity
+        }
+        user {
+            id
+            name
+            email
+        }
+    }
+}
+
+mutation CreateUser {
+    createUser(userInput:{name:"Ernest", email:"e@gmail.com" password:"123", role:"ROLE_USER"}){
+        id
+        name
+        email
+        password
+        role
+    }
+}
+
+mutation CreateUser1 {
+    createUser(userInput:{name:"Joojo", email:"j@gmail.com" password:"1234", role:"ROLE_USER"}){
+        id
+        name
+        email
+        password
+        role
+    }
+}
+
+mutation UpdateUser {
+    updateUser(userInput:{id:1, name:"Admin", email:"e@gmail.com" password:"123", role:"ROLE_ADMIN"}){
+        id
+        name
+        email
+        password
+        role
+    }
+}
+
+mutation DeleteUser {
+    deleteUser(id:1)
+}
+
+mutation CreateProduct {
+    createProduct(productInput: {name: "Apple", stock: 10, price: 5.5}){
+        id
+        name
+        stock
+        price
+    }
+}
+mutation CreateProduct1 {
+    createProduct(productInput: {name: "Orange", stock: 30, price: 2.5}){
+        id
+        name
+        stock
+        price
+    }
+}
+
+mutation CreateProduct2 {
+    createProduct(productInput: {name: "Banana", stock: 15, price: 6.5}){
+        id
+        name
+        stock
+        price
+    }
+}
+
+mutation UpdateProduct {
+    updateProduct(productInput: {id: 1, name: "Apple", stock: 20, price: 5.5}){
+        id
+        name
+        stock
+        price
+    }
+}
+
+mutation DeleteProduct {
+    deleteProduct(id:1)
+}
+
+mutation CreateOrder{
+    createOrder(orderInput: {
+        productLineInputList: [
+            { productId: 1, quantity: 3 },
+            { productId: 2, quantity: 5 }
+        ]
+    }) {
+        id
+        productLineList {
+            id
+            product {
+                id
+                name
+                stock
+                price
+            }
+            quantity
+        }
+        user {
+            id
+            name
+            email
+        }
+    }
+}
+
+mutation UpdateOrder{
+    updateOrder(orderInput: {
+        id: 1,
+        productLineInputList: [
+            { id: 1, productId: 1, quantity: 4 },
+            { id: 3, productId: 3, quantity: 3 }
+        ]
+    }) {
+        id
+        productLineList {
+            id
+            product {
+                id
+                name
+                stock
+                price
+            }
+            quantity
+        }
+        user {
+            id
+            name
+            email
+        }
+    }
+}
+
+mutation DeleteOrder {
+    deleteOrder(id:1)
+}
+
+query GetLowStockProducts{
+    getLowStockProducts(threshold:20){
+        id
+        name
+        stock
+        price
+    }
+}
+```
+
+
+## Run the Application with Docker
+
+To run the application with Docker, follow these steps:
+
+### Build the Docker Image
+```
+   $> docker build --tag=productorderservice:latest .
+```
+
+### Run the Docker Container
+```
+   $> docker run -p 8080:8080 productorderservice:latest
+```
