@@ -17,7 +17,7 @@ ProductOrderService is a Java Spring Boot project with GraphQL API for managing 
 - [Dependencies](#dependencies)
 - [Setup](#setup)
 - [How to Run](#how-to-run)
-- [Additional Information](#additional-information)
+- [GraphIQL Test Queries Sample](#graphIQL-test-queries-sample)
 
 ## Overview
 
@@ -83,7 +83,22 @@ Instructions on how to set up the project locally.
     mvn spring-boot:run
 
     ```
-Access the GraphQL endpoint:
+
+## Run the Application with Docker
+
+To run the application with Docker, follow these steps:
+
+### Build the Docker Image
+```
+   $> docker build --tag=productorderservice:latest .
+```
+
+### Run the Docker Container
+```
+   $> docker run -p 8080:8080 productorderservice:latest
+```
+
+## Access the GraphQL endpoint:
 
    ```bash
    http://localhost:8080/graphql
@@ -343,17 +358,21 @@ query GetLowStockProducts{
 }
 ```
 
+## Additional Information
 
-## Run the Application with Docker
+### Only Admins can :
 
-To run the application with Docker, follow these steps:
+- create and delete users
+- create, update and delete products
+- view all users and all orders
 
-### Build the Docker Image
-```
-   $> docker build --tag=productorderservice:latest .
-```
+#### Only Users can:
 
-### Run the Docker Container
-```
-   $> docker run -p 8080:8080 productorderservice:latest
-```
+- update their own details
+- view, update and delete their own orders
+
+#### Admins and Users can:
+
+- create and update orders
+- view all products
+- view all low stock products
