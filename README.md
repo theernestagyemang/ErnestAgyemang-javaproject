@@ -70,32 +70,36 @@ List the main dependencies used in the project.
 ## Setup
 
 Instructions on how to set up the project locally.
+### Clone and run the repository:
 
-1. Clone and run the repository:
+```bash
+git clone https://github.com/theernestagyemang/ErnestAgyemang-javaproject.git
 
-   ```bash
-   git clone https://github.com/theernestagyemang/ErnestAgyemang-javaproject.git
+cd ProductOrderService
 
-    cd ProductOrderService
+mvn clean install
 
+mvn spring-boot:run
+
+```
+    
+### Build the Jar file
+```bash
     mvn clean install
-
-    mvn spring-boot:run
-
-    ```
+```    
 
 ## Run the Application with Docker
 
 To run the application with Docker, follow these steps:
 
 ### Build the Docker Image
-```
-   $> docker build --tag=productorderservice:latest .
+```bash
+    docker build --tag=productorderservice:latest .
 ```
 
 ### Run the Docker Container
-```
-   $> docker run -p 8080:8080 productorderservice:latest
+```bash
+    docker run -p 8080:8080 productorderservice:latest
 ```
 
 ## Access the GraphQL endpoint:
