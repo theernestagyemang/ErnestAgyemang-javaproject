@@ -30,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders(Principal principal) {
-        if (userService.currentUser(principal).getRole() == UserRole.ROLE_USER) {
+        if (userService.currentUser(principal).getRole().equals(UserRole.ROLE_USER)) {
             return orderRepository.findAllByUser(userService.currentUser(principal));
         }
         return orderRepository.findAll();
@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrdersByUser(Long userId, Principal principal) {
-        if (userService.currentUser(principal).getRole() == UserRole.ROLE_USER) {
+        if (userService.currentUser(principal).getRole().equals(UserRole.ROLE_USER)) {
             if (!Objects.equals(userService.currentUser(principal).getId(), userId)) {
                 throw new NotAuthorizedException("You do not  have permission to see this order with id "
                         + userId);
@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(Long id, Principal principal) {
         Order order = orderRepository.findById(id).orElseThrow(()
                 -> new NotFoundException("Order with id " + id + " not found"));
-        if (userService.currentUser(principal).getRole() == UserRole.ROLE_USER) {
+        if (userService.currentUser(principal).getRole().equals(UserRole.ROLE_USER)) {
             if (!Objects.equals(userService.currentUser(principal).getId(), order.getUser().getId())) {
                 throw new NotAuthorizedException("You did not make this order with id " + id
                         + " and do not  have permission to this order");

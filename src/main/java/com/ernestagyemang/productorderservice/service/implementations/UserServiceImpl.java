@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(UserInput userInput, Principal principal) {
-        if (currentUser(principal).getRole() == UserRole.ROLE_USER) {
+        if (currentUser(principal).getRole().equals(UserRole.ROLE_USER)) {
             if (!Objects.equals(currentUser(principal).getId(), userInput.getId())) {
                 throw new NotAuthorizedException("You do not have permission to update another user");
             }

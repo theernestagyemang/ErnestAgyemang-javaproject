@@ -1,6 +1,7 @@
 package com.ernestagyemang.productorderservice.model;
 
 import com.ernestagyemang.productorderservice.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class User {
     @NotNull
     @Column(unique = true)
     private String email;
+    @JsonIgnore
     private String password;
     private boolean active;
     @Enumerated(EnumType.STRING)

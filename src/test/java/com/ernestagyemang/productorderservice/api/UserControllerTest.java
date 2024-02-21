@@ -1,6 +1,8 @@
 package com.ernestagyemang.productorderservice.api;
+
 import com.ernestagyemang.productorderservice.ProductOrderServiceApplication;
 import com.ernestagyemang.productorderservice.enums.UserRole;
+import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.User;
 import com.ernestagyemang.productorderservice.service.implementations.UserServiceImpl;
 import org.junit.jupiter.api.*;
@@ -24,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @AutoConfigureHttpGraphQlTester
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Import({UserServiceImpl.class })
+@Import({UserServiceImpl.class})
 @ContextConfiguration(classes = ProductOrderServiceApplication.class)
 class UserControllerTest {
 
@@ -37,25 +39,24 @@ class UserControllerTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AdminAuthenticate adminAuthenticate;
+
     @Test
     @Order(1)
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    void testFindAllUsersShouldReturnAllUsers() {
+    void testFindAllUsersShouldReturnAllUsers() throws NotFoundException {
         String document = """
-        query {
-            getAllUsers {
-                id
-                name
-                email
-                password
-                role
-            }
-        }
-        """;
-
-        httpGraphQlTester.mutate()
-                        .headers(headers -> headers.setBasicAuth("admin", "admin"))
-                        .build();
+                query {
+                    getAllUsers {
+                        id
+                        name
+                        email
+                        password
+                        role
+                    }
+                }
+                """;
 
         httpGraphQlTester.document(document)
                 .execute()
@@ -67,18 +68,18 @@ class UserControllerTest {
     @Test
     @Order(2)
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    void validIdShouldReturnUser() {
+    void validIdShouldReturnUser() throws NotFoundException {
         String document = """
-        query GetUserById($id: ID!){
-            getUserById(id: $id) {
-                id
-                name
-                email
-                password
-                role
-            }
-        }
-        """;
+                query GetUserById($id: ID!){
+                    getUserById(id: $id) {
+                        id
+                        name
+                        email
+                        password
+                        role
+                    }
+                }
+                """;
 
         httpGraphQlTester.document(document)
                 .variable("id", 1)
@@ -94,20 +95,20 @@ class UserControllerTest {
     @Test
     @Order(3)
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    void shouldCreateUser() {
+    void shouldCreateUser() throws NotFoundException {
         int currentUserCount = userService.getAllUsers().size();
 
         String document = """
-        mutation CreateUser($userInput: UserInput!){
-            createUser(userInput: $userInput) {
-                id
-                name
-                email
-                password
-                role
-            }
-        }
-    """;
+                    mutation CreateUser($userInput: UserInput!){
+                        createUser(userInput: $userInput) {
+                            id
+                            name
+                            email
+                            password
+                            role
+                        }
+                    }
+                """;
         AtomicReference<User> newUser = new AtomicReference<>();
         httpGraphQlTester.document(document)
                 .variable("userInput", Map.of("name", "Ernest1", "email", "ea@gmail.com", "password", "password", "role", "ROLE_USER"))
@@ -128,16 +129,45 @@ class UserControllerTest {
     }
 
     @Test
+    @Order(4)
+    void shouldUpdateExistingUser() throws NotFoundException {
+        adminAuthenticate.authenticateAsAdmin();
+        String document = """
+                    mutation updateUser ($userInput: UserUpdateInput!){
+                      updateUser(userInput: $userInput){
+                        id
+                        name
+                        email
+                        password
+                        role
+                      }
+                    }
+                """;
+
+        httpGraphQlTester.document(document)
+                .variable("userInput", Map.of("id", 1, "name", "Administrator", "email", "admin@admin.com", "password", "admin", "role", "ROLE_ADMIN"))
+                .execute()
+                .path("updateUser")
+                .entity(User.class);
+
+        User updatedUser = userService.getUserById(1L);
+        assertEquals("Administrator", updatedUser.getName());
+        assertEquals("admin@admin.com", updatedUser.getEmail());
+        assertTrue(passwordEncoder.matches("admin", updatedUser.getPassword()));
+        assertEquals(UserRole.ROLE_ADMIN, updatedUser.getRole());
+    }
+
+    @Test
     @Order(5)
     @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
-    void shouldRemoveUserWithValidId() {
+    void shouldRemoveUserWithValidId() throws NotFoundException {
         int currentCount = userService.getAllUsers().size();
 
         String document = """
-            mutation DeleteUser($id: ID!) {
-                deleteUser(id: $id)
-            }
-        """;
+                    mutation DeleteUser($id: ID!) {
+                        deleteUser(id: $id)
+                    }
+                """;
 
         httpGraphQlTester.document(document)
                 .variable("id", 1)
