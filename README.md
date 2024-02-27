@@ -104,9 +104,13 @@ To run the application with Docker, follow these steps:
 
 ## Access the GraphQL endpoint:
 
-   ```bash
+```bash
    http://localhost:8080/graphql
-   ```
+```
+### Access the GraphIQL interface for testing:
+```bash
+  http://localhost:8080/graphiql?path=/graphql
+```
 
 ### Default Admin Credentials:
 
@@ -117,6 +121,7 @@ On run a default admin user is created with the following credentials:
 In the application, the email field is used as the username.
 
 ## GraphIQL Test Queries Sample
+### Paste in the GraphIQL interface for testing:
 
 ```graphql
 query GetAllUsers{
