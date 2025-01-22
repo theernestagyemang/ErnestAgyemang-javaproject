@@ -4,7 +4,7 @@ import com.ernestagyemang.productorderservice.dto.MyUserDetailsDto;
 import com.ernestagyemang.productorderservice.dto.UserInput;
 import com.ernestagyemang.productorderservice.enums.UserRole;
 import com.ernestagyemang.productorderservice.exceptions.Duplicate409Exception;
-import com.ernestagyemang.productorderservice.exceptions.InValidEmailException;
+import com.ernestagyemang.productorderservice.exceptions.InvalidEmailException;
 import com.ernestagyemang.productorderservice.exceptions.NotAuthorizedException;
 import com.ernestagyemang.productorderservice.exceptions.NotFoundException;
 import com.ernestagyemang.productorderservice.model.User;
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         if (!matcher.matches()) {
-            throw new InValidEmailException("Invalid email format");
+            throw new InvalidEmailException("Invalid email format");
         }
     }
 

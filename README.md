@@ -56,12 +56,16 @@ com.ernestagyemang.productorderservice
 
 List the main dependencies used in the project.
 
-- Spring Boot
-- Spring Data JPA
+- Java (Version 21 LTS)
+- Spring Boot (Version 3.4.1)
+- Spring Data JPA 
 - H2 Database
 - Spring Security
 - GraphQL
 - Lombok
+
+## Authentication
+Basic Auth
 
 ## Setup
 

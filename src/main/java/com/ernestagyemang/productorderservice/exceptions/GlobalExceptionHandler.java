@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 public class GlobalExceptionHandler {
 
     @GraphQlExceptionHandler
-    public GraphQLError handleInValidEmailException(InValidEmailException ex) {
+    public GraphQLError handleInValidEmailException(InvalidEmailException ex) {
         return GraphQLError.newError()
                 .message(ex.getMessage())
                 .build();
